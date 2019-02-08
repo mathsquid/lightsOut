@@ -6,9 +6,9 @@
 
 
   <script>
-  var numrows = 10;
-  var numcols = 10;
-  var colornum;
+  var numrows = 8;
+  var numcols = 8;
+  var numcolors = 3;
   var basecolor=0;
 
 
@@ -21,19 +21,21 @@
   }
 
 
-  var colorlist=["00FF00", "0000FF"];
+//  var colorlist=["FFFFFF", "003300", "005500", "007700", "009900", "00BB00", "00FF00",];
+  var colorlist=["00FF00", "0000FF", "FF4422", "007700", "009900", "00BB00", "00FF00",];
 
   // Draw the table
   drawTable();
   // scramble();
 
+
 function drawTable(){
   document.write("<table border = 1 id='myTable'>");
   for (row=0; row<numrows; row++){
-    document.write("<tr height = 40 align=center>");
+    document.write("<tr height = 80 align=center>");
     for (col=0; col<numcols; col++){
       var coords=row*100+col;
-      document.write("<td id="+coords+" onclick='fff(id)'' width=40 bgcolor = ");
+      document.write("<td id="+coords+" onclick='pressButton(id)'' width=80 bgcolor = ");
       document.write(colorlist[0]);
       document.write("></td>");
     }
@@ -48,7 +50,10 @@ updateColoring();
   function updateColoring(){
     for (row=0; row<numrows; row++){
       for (col=0; col<numcols; col++){
-        document.getElementById("myTable").rows[row].cells[col].style.backgroundColor=colorlist[board[row][col]];
+        var square = document.getElementById("myTable").rows[row].cells[col]
+        square.style.backgroundColor=colorlist[board[row][col]];
+        if(board[row][col]!=0) square.innerHTML = "<font size=10>"+board[row][col]+"</font>";
+        if(board[row][col]==0) square.innerHTML = "";
       }
     }
   }
@@ -57,53 +62,49 @@ updateColoring();
 
 
 
-function scramble(){
-
-  for (var i=0; i<numrows*numcols; i++){
+function scramble(k){
+  if (k==0) k=numcols*numrows*numcolors;
+  for (var i=0; i<k; i++){
     c = Math.floor(Math.random()*numcols);
     r = Math.floor(Math.random()*numrows);
-    console.log("row "+r+"  col"+c);
+    // console.log("row "+r+"  col"+c);
 
-    if(r<numrows-1) board[r][c]=(board[r][c]+1)%2;
-    if(r>0)         board[r-1][c]=(board[r-1][c]+1)%2;
-    if(r<numrows-1) board[r+1][c]=(board[r+1][c]+1)%2;
-    if(c>0)         board[r][c-1]=(board[r][c-1]+1)%2;
-    if(c<numcols-1) board[r][c+1]=(board[r][c+1]+1)%2;
+    pressButton(r*100+c);
   }
   updateColoring();
 }
 
 
-  function fff(d){
+  function pressButton(d){
     r = Math.floor(d/100);
     c = d%100;
-    console.log("row "+r+"  col"+c);
+    // console.log("row "+r+"  col"+c);
     //cell
-    board[r][c]=(board[r][c]+1)%2;
+    board[r][c]=(board[r][c]+1)%numcolors;
     document.getElementById("myTable").rows[r].cells[c].style.backgroundColor=colorlist[board[r][c]];
 
     // above
     if(r>0){
-      board[r-1][c]=(board[r-1][c]+1)%2;
+      board[r-1][c]=(board[r-1][c]+1)%numcolors;
       document.getElementById("myTable").rows[r-1].cells[c].style.backgroundColor=colorlist[board[r-1][c]];
     }
 
     //below
     if(r<numrows-1){
-      board[r+1][c]=(board[r+1][c]+1)%2;
+      board[r+1][c]=(board[r+1][c]+1)%numcolors;
       document.getElementById("myTable").rows[r+1].cells[c].style.backgroundColor=colorlist[board[r+1][c]];
     }
 
     //left
     if(c>0){
-      board[r][c-1]=(board[r][c-1]+1)%2;
+      board[r][c-1]=(board[r][c-1]+1)%numcolors;
       document.getElementById("myTable").rows[r].cells[c-1].style.backgroundColor=colorlist[board[r][c-1]];
     }
 
     //right
 
     if(c<numcols-1){
-      board[r][c+1]=(board[r][c+1]+1)%2;
+      board[r][c+1]=(board[r][c+1]+1)%numcolors;
       document.getElementById("myTable").rows[r].cells[c+1].style.backgroundColor=colorlist[board[r][c+1]];
     }
     //    document.getElementById("myTable").rows[r].cells[c].style.backgroundColor=colorlist[board[c][r]];
@@ -128,7 +129,9 @@ function scramble(){
 
 </script>
 <br>
-  <button onclick="scramble()">Scramble</button>
+<button onclick="scramble(numcolors*3)">Lightly Scramble</button>
+<button onclick="scramble(0)">Really Scramble</button>
+  <div id="ll"> Number of colors = </div>
 
 </body>
 </html>
