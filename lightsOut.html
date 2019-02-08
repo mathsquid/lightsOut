@@ -6,8 +6,8 @@
 
 
   <script>
-  var numrows = 5;
-  var numcols = 5;
+  var numrows = 10;
+  var numcols = 10;
   var colornum;
   var basecolor=0;
 
@@ -62,48 +62,49 @@ function scramble(){
   for (var i=0; i<numrows*numcols; i++){
     c = Math.floor(Math.random()*numcols);
     r = Math.floor(Math.random()*numrows);
+    console.log("row "+r+"  col"+c);
 
-    board[c][r]=(board[c][r]+1)%2;
-    if(r>0) board[c][r-1]=(board[c][r-1]+1)%2;
-    if(r<numrows-1) board[c][r+1]=(board[c][r+1]+1)%2;
-    if(c>0)board[c-1][r]=(board[c-1][r]+1)%2;
-    if(c<numcols-1)board[c+1][r]=(board[c+1][r]+1)%2;
+    if(r<numrows-1) board[r][c]=(board[r][c]+1)%2;
+    if(r>0)         board[r-1][c]=(board[r-1][c]+1)%2;
+    if(r<numrows-1) board[r+1][c]=(board[r+1][c]+1)%2;
+    if(c>0)         board[r][c-1]=(board[r][c-1]+1)%2;
+    if(c<numcols-1) board[r][c+1]=(board[r][c+1]+1)%2;
   }
   updateColoring();
 }
 
 
   function fff(d){
-    c = Math.floor(d/100);
-    r = d%100;
-
+    r = Math.floor(d/100);
+    c = d%100;
+    console.log("row "+r+"  col"+c);
     //cell
-    board[c][r]=(board[c][r]+1)%2;
-    document.getElementById("myTable").rows[r].cells[c].style.backgroundColor=colorlist[board[c][r]];
+    board[r][c]=(board[r][c]+1)%2;
+    document.getElementById("myTable").rows[r].cells[c].style.backgroundColor=colorlist[board[r][c]];
 
     // above
     if(r>0){
-      board[c][r-1]=(board[c][r-1]+1)%2;
-      document.getElementById("myTable").rows[r-1].cells[c].style.backgroundColor=colorlist[board[c][r-1]];
+      board[r-1][c]=(board[r-1][c]+1)%2;
+      document.getElementById("myTable").rows[r-1].cells[c].style.backgroundColor=colorlist[board[r-1][c]];
     }
 
     //below
     if(r<numrows-1){
-      board[c][r+1]=(board[c][r+1]+1)%2;
-      document.getElementById("myTable").rows[r+1].cells[c].style.backgroundColor=colorlist[board[c][r+1]];
+      board[r+1][c]=(board[r+1][c]+1)%2;
+      document.getElementById("myTable").rows[r+1].cells[c].style.backgroundColor=colorlist[board[r+1][c]];
     }
 
     //left
     if(c>0){
-      board[c-1][r]=(board[c-1][r]+1)%2;
-      document.getElementById("myTable").rows[r].cells[c-1].style.backgroundColor=colorlist[board[c-1][r]];
+      board[r][c-1]=(board[r][c-1]+1)%2;
+      document.getElementById("myTable").rows[r].cells[c-1].style.backgroundColor=colorlist[board[r][c-1]];
     }
 
     //right
 
     if(c<numcols-1){
-      board[c+1][r]=(board[c+1][r]+1)%2;
-      document.getElementById("myTable").rows[r].cells[c+1].style.backgroundColor=colorlist[board[c+1][r]];
+      board[r][c+1]=(board[r][c+1]+1)%2;
+      document.getElementById("myTable").rows[r].cells[c+1].style.backgroundColor=colorlist[board[r][c+1]];
     }
     //    document.getElementById("myTable").rows[r].cells[c].style.backgroundColor=colorlist[board[c][r]];
 
@@ -122,7 +123,6 @@ function scramble(){
       }
     }
     if (flag==0) alert("You Won.");
-    else console.log("you haven't won yet");
   }
 
 
