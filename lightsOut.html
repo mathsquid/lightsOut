@@ -6,31 +6,33 @@
 
 
   <script>
-  var size = 5;
+  var numrows = 5;
+  var numcols = 5;
   var colornum;
   var basecolor=0;
 
 
   // //initialize the array
 
-  var board=new Array(size);
-  for (var i=0; i<size; i++){
-    board[i]= new Array(size);
-    for (var j=0; j<size; j++){
-    }
+  var board=new Array(numrows);
+  for (var i=0; i<numrows; i++){
+    board[i]= new Array(numcols);
+    for (var j=0; j<numcols; j++) board[i][j]=0;
   }
 
 
   var colorlist=["00FF00", "0000FF"];
 
   // Draw the table
+  drawTable();
+  // scramble();
 
 function drawTable(){
   document.write("<table border = 1 id='myTable'>");
-  for (row=0; row<size; row++){
+  for (row=0; row<numrows; row++){
     document.write("<tr height = 40 align=center>");
-    for (col=0; col<size; col++){
-      var coords=col*100+row;
+    for (col=0; col<numcols; col++){
+      var coords=row*100+col;
       document.write("<td id="+coords+" onclick='fff(id)'' width=40 bgcolor = ");
       document.write(colorlist[0]);
       document.write("></td>");
@@ -40,15 +42,13 @@ function drawTable(){
   document.write("</table><br><br>");
 }
 
-drawTable();
-scramble();
 
 
 updateColoring();
   function updateColoring(){
-    for (row=0; row<size; row++){
-      for (col=0; col<size; col++){
-        document.getElementById("myTable").rows[row].cells[col].style.backgroundColor=colorlist[board[col][row]];
+    for (row=0; row<numrows; row++){
+      for (col=0; col<numcols; col++){
+        document.getElementById("myTable").rows[row].cells[col].style.backgroundColor=colorlist[board[row][col]];
       }
     }
   }
@@ -58,24 +58,18 @@ updateColoring();
 
 
 function scramble(){
-  for (var i=0; i<size; i++){
-    board[i]= new Array(size);
-    for (var j=0; j<size; j++){
-      board[i][j]=0;
-    }
+
+  for (var i=0; i<numrows*numcols; i++){
+    c = Math.floor(Math.random()*numcols);
+    r = Math.floor(Math.random()*numrows);
+
+    board[c][r]=(board[c][r]+1)%2;
+    if(r>0) board[c][r-1]=(board[c][r-1]+1)%2;
+    if(r<numrows-1) board[c][r+1]=(board[c][r+1]+1)%2;
+    if(c>0)board[c-1][r]=(board[c-1][r]+1)%2;
+    if(c<numcols-1)board[c+1][r]=(board[c+1][r]+1)%2;
   }
-
-for (var i=0; i<size*size; i++){
-  c = Math.floor(Math.random()*size);
-  r = Math.floor(Math.random()*size);
-
-  board[c][r]=(board[c][r]+1)%2;
-  if(r>0) board[c][r-1]=(board[c][r-1]+1)%2;
-  if(r<size-1) board[c][r+1]=(board[c][r+1]+1)%2;
-  if(c>0)board[c-1][r]=(board[c-1][r]+1)%2;
-  if(c<size-1)board[c+1][r]=(board[c+1][r]+1)%2;
-}
-updateColoring();
+  updateColoring();
 }
 
 
@@ -94,7 +88,7 @@ updateColoring();
     }
 
     //below
-    if(r<size-1){
+    if(r<numrows-1){
       board[c][r+1]=(board[c][r+1]+1)%2;
       document.getElementById("myTable").rows[r+1].cells[c].style.backgroundColor=colorlist[board[c][r+1]];
     }
@@ -107,7 +101,7 @@ updateColoring();
 
     //right
 
-    if(c<size-1){
+    if(c<numcols-1){
       board[c+1][r]=(board[c+1][r]+1)%2;
       document.getElementById("myTable").rows[r].cells[c+1].style.backgroundColor=colorlist[board[c+1][r]];
     }
@@ -115,19 +109,20 @@ updateColoring();
 
 
 
-    console.log(board);
-
+//    console.log(board);
+    updateColoring();
     checkifwin();
 
   }
   function checkifwin(){
     var flag = 0;
-    for (var i=0; i<size; i++){
-      for(var j=0; j<size; j++){
-        flag +=board[i][j];
+    for (var r=0; r<numrows; r++){
+        for(var c=0; c<numcols; c++){
+        flag +=board[r][c];
       }
     }
     if (flag==0) alert("You Won.");
+    else console.log("you haven't won yet");
   }
 
 
