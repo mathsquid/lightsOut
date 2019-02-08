@@ -1,0 +1,139 @@
+<html>
+<head>
+  <title>Lights Out</title>
+</head>
+<body>
+
+
+  <script>
+  var size = 5;
+  var colornum;
+  var basecolor=0;
+
+
+  // //initialize the array
+
+  var board=new Array(size);
+  for (var i=0; i<size; i++){
+    board[i]= new Array(size);
+    for (var j=0; j<size; j++){
+    }
+  }
+
+
+  var colorlist=["00FF00", "0000FF"];
+
+  // Draw the table
+
+function drawTable(){
+  document.write("<table border = 1 id='myTable'>");
+  for (row=0; row<size; row++){
+    document.write("<tr height = 40 align=center>");
+    for (col=0; col<size; col++){
+      var coords=col*100+row;
+      document.write("<td id="+coords+" onclick='fff(id)'' width=40 bgcolor = ");
+      document.write(colorlist[0]);
+      document.write("></td>");
+    }
+    document.write("</tr>");
+  }
+  document.write("</table><br><br>");
+}
+
+drawTable();
+scramble();
+
+
+updateColoring();
+  function updateColoring(){
+    for (row=0; row<size; row++){
+      for (col=0; col<size; col++){
+        document.getElementById("myTable").rows[row].cells[col].style.backgroundColor=colorlist[board[col][row]];
+      }
+    }
+  }
+
+
+
+
+
+function scramble(){
+  for (var i=0; i<size; i++){
+    board[i]= new Array(size);
+    for (var j=0; j<size; j++){
+      board[i][j]=0;
+    }
+  }
+
+for (var i=0; i<size*size; i++){
+  c = Math.floor(Math.random()*size);
+  r = Math.floor(Math.random()*size);
+
+  board[c][r]=(board[c][r]+1)%2;
+  if(r>0) board[c][r-1]=(board[c][r-1]+1)%2;
+  if(r<size-1) board[c][r+1]=(board[c][r+1]+1)%2;
+  if(c>0)board[c-1][r]=(board[c-1][r]+1)%2;
+  if(c<size-1)board[c+1][r]=(board[c+1][r]+1)%2;
+}
+updateColoring();
+}
+
+
+  function fff(d){
+    c = Math.floor(d/100);
+    r = d%100;
+
+    //cell
+    board[c][r]=(board[c][r]+1)%2;
+    document.getElementById("myTable").rows[r].cells[c].style.backgroundColor=colorlist[board[c][r]];
+
+    // above
+    if(r>0){
+      board[c][r-1]=(board[c][r-1]+1)%2;
+      document.getElementById("myTable").rows[r-1].cells[c].style.backgroundColor=colorlist[board[c][r-1]];
+    }
+
+    //below
+    if(r<size-1){
+      board[c][r+1]=(board[c][r+1]+1)%2;
+      document.getElementById("myTable").rows[r+1].cells[c].style.backgroundColor=colorlist[board[c][r+1]];
+    }
+
+    //left
+    if(c>0){
+      board[c-1][r]=(board[c-1][r]+1)%2;
+      document.getElementById("myTable").rows[r].cells[c-1].style.backgroundColor=colorlist[board[c-1][r]];
+    }
+
+    //right
+
+    if(c<size-1){
+      board[c+1][r]=(board[c+1][r]+1)%2;
+      document.getElementById("myTable").rows[r].cells[c+1].style.backgroundColor=colorlist[board[c+1][r]];
+    }
+    //    document.getElementById("myTable").rows[r].cells[c].style.backgroundColor=colorlist[board[c][r]];
+
+
+
+    console.log(board);
+
+    checkifwin();
+
+  }
+  function checkifwin(){
+    var flag = 0;
+    for (var i=0; i<size; i++){
+      for(var j=0; j<size; j++){
+        flag +=board[i][j];
+      }
+    }
+    if (flag==0) alert("You Won.");
+  }
+
+
+</script>
+<br>
+  <button onclick="scramble()">Scramble</button>
+
+</body>
+</html>
