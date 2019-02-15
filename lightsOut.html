@@ -6,47 +6,65 @@
 
 
   <script>
-  var numrows = 8;
-  var numcols = 8;
+  var numrows = 5;
+  var numcols = 5;
   var numcolors = 3;
-  var basecolor=0;
+  var colorlist=["00FF00", "0000FF", "FF4422", "007700", "009900", "00BB00", "00FF00",];
+  var board;
+
+
+   var controlsText = '<div id="controls">   <br>   <button onclick="scramble(numcolors*3)">Lightly Scramble</button>   <button onclick="scramble(0)">Really Scramble</button>   <button onclick="chaseDown()">ChaseDown</button>   <button onclick="chaseRight()">ChaseRight</button> <hr><table><tr><td>Number of Rows:</td> <td><input type="TEXT" id="rowInput" value="0"  size="5"><br></td></tr>  <tr><td>Number of Columns:</td> <td><input type="TEXT" id="colInput" value="0"  size="5"><br></td></tr>  <tr><td>Number of Colors:</td> <td><input type="TEXT" id="colorInput" value="0"  size="5"><br></td></tr></table><button onclick="reset()">Reset</button></div>';
+
+
+
+
 
 
   // //initialize the array
-
-  var board=new Array(numrows);
-  for (var i=0; i<numrows; i++){
-    board[i]= new Array(numcols);
-    for (var j=0; j<numcols; j++) board[i][j]=0;
-  }
-
-
-//  var colorlist=["FFFFFF", "003300", "005500", "007700", "009900", "00BB00", "00FF00",];
-  var colorlist=["00FF00", "0000FF", "FF4422", "007700", "009900", "00BB00", "00FF00",];
-
-  // Draw the table
-  drawTable();
-  // scramble();
-
-
-function drawTable(){
-  document.write("<table border = 1 id='myTable'>");
-  for (row=0; row<numrows; row++){
-    document.write("<tr height = 80 align=center>");
-    for (col=0; col<numcols; col++){
-      var coords=row*100+col;
-      document.write("<td id="+coords+" onclick='pressButton(id)'' width=80 bgcolor = ");
-      document.write(colorlist[0]);
-      document.write("></td>");
+  function initboard(){
+    board=new Array(numrows);
+    for (var i=0; i<numrows; i++){
+      board[i]= new Array(numcols);
+      for (var j=0; j<numcols; j++) board[i][j]=0;
     }
-    document.write("</tr>");
   }
-  document.write("</table><br><br>");
-}
+
+  function drawTable(){
+    var t = document.getElementById("myTable");
+    if (t!=null) t.parentElement.removeChild(t);
+    document.write("<table border = 1 id='myTable'>");
+    for (row=0; row<numrows; row++){
+      document.write("<tr height = 80 align=center>");
+      for (col=0; col<numcols; col++){
+        var coords=row*100+col;
+        document.write("<td id="+coords+" onclick='pressButton(id)'' width=80 bgcolor = ");
+        document.write(colorlist[0]);
+        document.write("></td>");
+      }
+      document.write("</tr>");
+    }
+    document.write("</table>");
+
+    var ct = document.getElementById("controls");
+    if (ct!=null) document.body.removeChild(document.getElementById("controls"))
+    window.document.body.insertAdjacentHTML('beforeend', controlsText);
+    document.getElementById("colInput").value = numcols;
+    document.getElementById("rowInput").value = numrows;
+    document.getElementById("colorInput").value = numcolors;
 
 
 
-updateColoring();
+  }
+
+  function reset(){
+    numcols=document.getElementById("colInput").value;;
+    numrows=document.getElementById("rowInput").value;;
+    numcolors=document.getElementById("colorInput").value;;
+    initboard();
+    drawTable();
+
+  }
+
   function updateColoring(){
     for (row=0; row<numrows; row++){
       for (col=0; col<numcols; col++){
@@ -58,22 +76,17 @@ updateColoring();
     }
   }
 
+  function scramble(k){
+    if (k==0) k=numcols*numrows*numcolors;
+    for (var i=0; i<k; i++){
+      c = Math.floor(Math.random()*numcols);
+      r = Math.floor(Math.random()*numrows);
+      // console.log("row "+r+"  col"+c);
 
-
-
-
-function scramble(k){
-  if (k==0) k=numcols*numrows*numcolors;
-  for (var i=0; i<k; i++){
-    c = Math.floor(Math.random()*numcols);
-    r = Math.floor(Math.random()*numrows);
-    // console.log("row "+r+"  col"+c);
-
-    pressButton(r*100+c);
+      pressButton(r*100+c);
+    }
+    updateColoring();
   }
-  updateColoring();
-}
-
 
   function pressButton(d){
     r = Math.floor(d/100);
@@ -111,15 +124,16 @@ function scramble(k){
 
 
 
-//    console.log(board);
+    //    console.log(board);
     updateColoring();
     checkifwin();
 
   }
+
   function checkifwin(){
     var flag = 0;
     for (var r=0; r<numrows; r++){
-        for(var c=0; c<numcols; c++){
+      for(var c=0; c<numcols; c++){
         flag +=board[r][c];
       }
     }
@@ -127,11 +141,35 @@ function scramble(k){
   }
 
 
+
+
+  function chaseDown(){
+    for (var r1 = 1 ; r1<numrows; r1++){
+      for (var c1 = 0; c1<numcols; c1++){
+      while(board[r1-1][c1]!=0) {
+        pressButton(r1*100+c1);
+      }
+     }
+    }
+  }
+
+  function chaseRight(){
+    for (var c1 = 1; c1<numcols; c1++){
+      for (var r1 = 0 ; r1<numrows; r1++){
+       while(board[r1][c1-1]!=0) {
+       pressButton(r1*100+c1);
+      }
+     }
+    }
+  }
+
+  initboard();
+  drawTable();
+  updateColoring();
+
+
+
 </script>
-<br>
-<button onclick="scramble(numcolors*3)">Lightly Scramble</button>
-<button onclick="scramble(0)">Really Scramble</button>
-  <div id="ll"> Number of colors = </div>
 
 </body>
 </html>
